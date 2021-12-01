@@ -13,7 +13,7 @@ import java.io.IOException;
 @SpringBootApplication
 @TypeHint(typeNames = "org.springframework.boot.context.properties.ConfigurationPropertiesBinder$Factory",
         types = {ServerConfigProperties.class, RemoteServerInfo.class})
-public class DemoApplication {
+public class LbProxyApplication {
 
     public static void main(String[] args) throws IOException {
         Options options = new Options();
@@ -37,7 +37,7 @@ public class DemoApplication {
         String configFilePath = cmd.getOptionValue(input.getOpt());
         ServerConfigProperties.init(new FileSystemResource(configFilePath).getInputStream());
 
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(LbProxyApplication.class, args);
 //        System.out.println(new SubnetUtils("10.43.0.0/16").getInfo().isInRange("10.43.245.164"));
     }
 

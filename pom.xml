@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.coder</groupId>
-    <artifactId>demo</artifactId>
+    <artifactId>lb-local-proxy</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>lb-local-proxy</name>
     <description>lb-local-proxy</description>
@@ -90,6 +90,7 @@
     </dependencies>
 
     <build>
+        <finalName>${artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

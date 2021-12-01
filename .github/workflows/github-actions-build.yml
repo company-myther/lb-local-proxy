@@ -10,58 +10,58 @@ on:
     branches: [ main ]
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: DeLaGuardo/setup-graalvm@5.0
-        with:
-          # GraalVM version, no pattern syntax available atm
-          graalvm: '21.0.0.2'
-          # Java version, optional, defaults to 'java8'. Available options are 'java8' and 'java11'.
-          java: 'java11'
-          # Architecture flag, optional, defaults to 'amd64'. Available options are 'amd64' and 'aarch64'. Later is available only for linux runners.
-          arch: 'amd64'
-      - name: gu-install-native-image
-        run: gu install native-image
-      - name: mvn
-        run: mvn -Pnative clean -DskipTests package
-      - name: rename
-        run: mv ./target/lb-local-proxy ./target/lb-local-proxy-linux-amd64
-      - name: upload-file
-        id: upload-file
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: ./target/lb-local-proxy-linux-amd64
-  build-macos:
-    runs-on: macos-11
-    steps:
-      - uses: actions/checkout@v2
-      - uses: DeLaGuardo/setup-graalvm@5.0
-        with:
-          # GraalVM version, no pattern syntax available atm
-          graalvm: '21.0.0.2'
-          # Java version, optional, defaults to 'java8'. Available options are 'java8' and 'java11'.
-          java: 'java11'
-          # Architecture flag, optional, defaults to 'amd64'. Available options are 'amd64' and 'aarch64'. Later is available only for linux runners.
-          arch: 'amd64'
-      - name: gu-install-native-image
-        run: gu install native-image
-      - name: mvn
-        run: mvn -Pnative clean -DskipTests package
-      - name: rename
-        run: mv ./target/lb-local-proxy ./target/lb-local-proxy-macos-11
-      - name: upload-file
-        id: upload-file
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: ./target/lb-local-proxy-macos-11
+#  build-linux:
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #      - uses: actions/checkout@v2
+  #      - uses: DeLaGuardo/setup-graalvm@5.0
+  #        with:
+  #          # GraalVM version, no pattern syntax available atm
+  #          graalvm: '21.0.0.2'
+  #          # Java version, optional, defaults to 'java8'. Available options are 'java8' and 'java11'.
+  #          java: 'java11'
+  #          # Architecture flag, optional, defaults to 'amd64'. Available options are 'amd64' and 'aarch64'. Later is available only for linux runners.
+  #          arch: 'amd64'
+  #      - name: gu-install-native-image
+  #        run: gu install native-image
+  #      - name: mvn
+  #        run: mvn -Pnative clean -DskipTests package
+  #      - name: rename
+  #        run: mv ./target/lb-local-proxy ./target/lb-local-proxy-linux-amd64
+  #      - name: upload-file
+  #        id: upload-file
+  #        uses: softprops/action-gh-release@v1
+  #        if: startsWith(github.ref, 'refs/tags/')
+  #        env:
+  #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #        with:
+  #          files: ./target/lb-local-proxy-linux-amd64
+  #  build-macos:
+  #    runs-on: macos-11
+  #    steps:
+  #      - uses: actions/checkout@v2
+  #      - uses: DeLaGuardo/setup-graalvm@5.0
+  #        with:
+  #          # GraalVM version, no pattern syntax available atm
+  #          graalvm: '21.0.0.2'
+  #          # Java version, optional, defaults to 'java8'. Available options are 'java8' and 'java11'.
+  #          java: 'java11'
+  #          # Architecture flag, optional, defaults to 'amd64'. Available options are 'amd64' and 'aarch64'. Later is available only for linux runners.
+  #          arch: 'amd64'
+  #      - name: gu-install-native-image
+  #        run: gu install native-image
+  #      - name: mvn
+  #        run: mvn -Pnative clean -DskipTests package
+  #      - name: rename
+  #        run: mv ./target/lb-local-proxy ./target/lb-local-proxy-macos-11
+  #      - name: upload-file
+  #        id: upload-file
+  #        uses: softprops/action-gh-release@v1
+  #        if: startsWith(github.ref, 'refs/tags/')
+  #        env:
+  #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #        with:
+  #          files: ./target/lb-local-proxy-macos-11
   build-windows:
     runs-on: windows-latest
     steps:
@@ -80,7 +80,7 @@ jobs:
       - name: mvn
         run: mvn -Pnative clean -DskipTests package
       - name: rename
-        run: move ./target/lb-local-proxy.exe ./target/lb-local-proxy-windows.exe
+        run: dir && move .\target\lb-local-proxy.exe .\target\lb-local-proxy-windows.exe
       - name: upload-file
         id: upload-file
         uses: softprops/action-gh-release@v1

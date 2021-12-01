@@ -20,10 +20,12 @@ jobs:
           java: 'java11'
           # Architecture flag, optional, defaults to 'amd64'. Available options are 'amd64' and 'aarch64'. Later is available only for linux runners.
           arch: 'amd64'
-      - name: Build with Maven
-        run: gu install native-image && mvn -Pnative clean -DskipTests package
-      - name: Upload Release Asset
-        id: upload-release-asset
+      - name: gu-install-native-image
+        run: gu install native-image
+      - name: mvn
+        run: mvn -Pnative clean -DskipTests package
+      - name: upload-file
+        id: upload-file
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

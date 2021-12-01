@@ -80,7 +80,7 @@ jobs:
       - name: mvn
         run: mvn -Pnative clean -DskipTests package
       - name: rename
-        run: dir && move .\target\lb-local-proxy.exe .\target\lb-local-proxy-windows.exe
+        run: dir target && move .\target\lb-local-proxy.exe .\target\lb-local-proxy-windows.exe
       - name: upload-file
         id: upload-file
         uses: softprops/action-gh-release@v1

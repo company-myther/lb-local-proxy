@@ -74,10 +74,11 @@ jobs:
           java: 'java11'
           # Architecture flag, optional, defaults to 'amd64'. Available options are 'amd64' and 'aarch64'. Later is available only for linux runners.
           arch: 'amd64'
-      - name: 'Set up Visual C Build Tools Workload for Visual Studio 2017 Build Tools'
+      - name: install native-image and vctools,msvc
         run: |
-          gu.cmd install native-image && choco install visualstudio2022-workload-vctools
-          && choco install visualstudio2022-workload-nativedesktop
+          gu.cmd install native-image
+          choco install visualstudio2022-workload-vctools
+          choco install visualstudio2022-workload-nativedesktop
       - name: mvn
         run: mvn -Pnative clean -DskipTests package
       - name: rename

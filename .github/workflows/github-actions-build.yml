@@ -76,7 +76,7 @@ jobs:
           arch: 'amd64'
       - name: 'Set up Visual C Build Tools Workload for Visual Studio 2017 Build Tools'
         run: |
-          gu.cmd install native-image && choco install visualstudio2017-workload-vctools
+          gu.cmd install native-image && choco install visualstudio2022-workload-vctools
       - name: mvn
         run: mvn -Pnative clean -DskipTests package
       - name: rename

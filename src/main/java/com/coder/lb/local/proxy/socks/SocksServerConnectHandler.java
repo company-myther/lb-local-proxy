@@ -123,8 +123,17 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                 });
 
         RemoteServerInfo matchServer = getMatchServer(request.dstAddr());
-        logger.info("请求{}:{} 代理到 {}：{}", request.dstAddr(), request.dstPort(), matchServer.getHost(), matchServer.getPort());
+        if (matchServer == null) {
+            matchServer = new RemoteServerInfo();
+            logger.info("There is no proxy server matching host[{}], and there is no default proxy server, " +
+                    "directly connect to the target server", request.dstAddr());
+            matchServer.setHost(request.dstAddr());
+            matchServer.setPort(request.dstPort());
+        }
+        logger.info("Request {}:{} proxy to {}:{}", request.dstAddr(),
+                request.dstPort(), matchServer.getHost(), matchServer.getPort());
         final Channel inboundChannel = ctx.channel();
+        RemoteServerInfo finalMatchServer = matchServer;
         b.group(inboundChannel.eventLoop())
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
@@ -133,7 +142,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                     @Override
                     protected void initChannel(SocketChannel ch) {
                         ch.pipeline()
-                                .addFirst(new Socks5ProxyHandler(new InetSocketAddress(matchServer.getHost(), matchServer.getPort())))
+                                .addFirst(new Socks5ProxyHandler(new InetSocketAddress(finalMatchServer.getHost(), finalMatchServer.getPort())))
                                 .addLast(new DirectClientHandler(promise));
                     }
                 });

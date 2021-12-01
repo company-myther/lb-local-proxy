@@ -36,7 +36,7 @@ public final class SocksServer implements ApplicationListener<ApplicationReadyEv
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         ServerConfigProperties serverConfigProperties = ServerConfigProperties.getInstance();
-        logger.info("启动服务器，配置信息为: \n{}\n---", new YAMLMapper().writerWithDefaultPrettyPrinter()
+        logger.info("Start the server, the configuration information is: \n{}\n---", new YAMLMapper().writerWithDefaultPrettyPrinter()
                 .writeValueAsString(serverConfigProperties));
 
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);

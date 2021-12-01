@@ -35,7 +35,7 @@ public final class SocksServer implements ApplicationListener<ApplicationReadyEv
     @SneakyThrows
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        ServerConfigProperties serverConfigProperties = ServerConfigProperties.getInstance();
+        ServerConfigProperties serverConfigProperties = ServerConfigProperties.init();
         logger.info("Start the server, the configuration information is: \n{}\n---", new YAMLMapper().writerWithDefaultPrettyPrinter()
                 .writeValueAsString(serverConfigProperties));
 

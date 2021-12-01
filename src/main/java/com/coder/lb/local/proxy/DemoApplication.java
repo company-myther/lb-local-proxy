@@ -35,7 +35,8 @@ public class DemoApplication {
             System.exit(1);
         }
         String configFilePath = cmd.getOptionValue(input.getOpt());
-        ServerConfigProperties.getInstance(new FileSystemResource(configFilePath).getInputStream());
+        ServerConfigProperties.init(new FileSystemResource(configFilePath).getInputStream());
+
         SpringApplication.run(DemoApplication.class, args);
 //        System.out.println(new SubnetUtils("10.43.0.0/16").getInfo().isInRange("10.43.245.164"));
     }

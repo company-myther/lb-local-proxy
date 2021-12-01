@@ -3,18 +3,22 @@ defaultRemoteServer:
   host: 127.0.0.1
   hostMatcher: 'REGEX_MATCH'
   matchData: null
-  port: 10808
-port: 18443
+  port: 1080
+port: 1081
 remoteServerInfoList:
   - host: 127.0.0.1
     hostMatcher: 'SUBNET_MATCH'
-    matchData: 10.42.0.0/16
+    matchData: 10.14.0.0/16
     port: 2080
   - host: 127.0.0.1
     hostMatcher: 'SUBNET_MATCH'
-    matchData: 10.43.0.0/16
+    matchData: 10.14.0.0/16
+    port: 2080
+  - host: 127.0.0.1
+    hostMatcher: 'SUBNET_MATCH'
+    matchData: 172.1.0.0/16
     port: 2080
   - host: 127.0.0.1
     hostMatcher: 'REGEX_MATCH'
-    matchData: .*svc.cluster.local
+    matchData: .*example.com
     port: 2080

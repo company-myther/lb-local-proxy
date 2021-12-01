@@ -24,9 +24,6 @@ import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.socksx.SocksMessage;
-import io.netty.handler.codec.socksx.v4.DefaultSocks4CommandResponse;
-import io.netty.handler.codec.socksx.v4.Socks4CommandRequest;
-import io.netty.handler.codec.socksx.v4.Socks4CommandStatus;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandResponse;
 import io.netty.handler.codec.socksx.v5.Socks5CommandRequest;
 import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
@@ -42,61 +39,19 @@ import java.net.InetSocketAddress;
  * @author coder
  */
 @ChannelHandler.Sharable
-public final class SocksServerConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
-    private static final ServerConfigProperties SERVER_CONFIG_PROPERTIES = ServerConfigProperties.getInstance();
-    private static final Logger logger = LoggerFactory.getLogger(SocksServerConnectHandler.class);
+public final class ProxyConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
+    private static final Logger logger = LoggerFactory.getLogger(ProxyConnectHandler.class);
 
     private final Bootstrap b = new Bootstrap();
 
     @Override
     public void channelRead0(final ChannelHandlerContext ctx, final SocksMessage message) {
-        if (message instanceof Socks4CommandRequest) {
-            final Socks4CommandRequest request = (Socks4CommandRequest) message;
-            Promise<Channel> promise = ctx.executor().newPromise();
-            promise.addListener(
-                    (FutureListener<Channel>) future -> {
-                        final Channel outboundChannel = future.getNow();
-                        if (future.isSuccess()) {
-                            ChannelFuture responseFuture = ctx.channel().writeAndFlush(
-                                    new DefaultSocks4CommandResponse(Socks4CommandStatus.SUCCESS));
-
-                            responseFuture.addListener((ChannelFutureListener) channelFuture -> {
-                                ctx.pipeline().remove(SocksServerConnectHandler.this);
-                                outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
-                                ctx.pipeline().addLast(new RelayHandler(outboundChannel));
-                            });
-                        } else {
-                            ctx.channel().writeAndFlush(
-                                    new DefaultSocks4CommandResponse(Socks4CommandStatus.REJECTED_OR_FAILED));
-                            SocksServerUtils.closeOnFlush(ctx.channel());
-                        }
-                    });
-
-            final Channel inboundChannel = ctx.channel();
-            b.group(inboundChannel.eventLoop())
-                    .channel(NioSocketChannel.class)
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-                    .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new DirectClientHandler(promise));
-
-
-            b.connect(request.dstAddr(), request.dstPort()).addListener((ChannelFutureListener) future -> {
-                if (!future.isSuccess()) {
-                    // Close the connection if the connection attempt has failed.
-                    ctx.channel().writeAndFlush(
-                            new DefaultSocks4CommandResponse(Socks4CommandStatus.REJECTED_OR_FAILED)
-                    );
-                    SocksServerUtils.closeOnFlush(ctx.channel());
-                }
-                // succeed: Connection established use handler provided results
-            });
-        } else if (message instanceof Socks5CommandRequest) {
+        if (message instanceof Socks5CommandRequest) {
             processSock5((Socks5CommandRequest) message, ctx);
         } else {
             ctx.close();
         }
     }
-
     private void processSock5(Socks5CommandRequest request, ChannelHandlerContext ctx) {
         Promise<Channel> promise = ctx.executor().newPromise();
         promise.addListener(
@@ -111,7 +66,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                                         request.dstPort()));
 
                         responseFuture.addListener((ChannelFutureListener) channelFuture -> {
-                            ctx.pipeline().remove(SocksServerConnectHandler.this);
+                            ctx.pipeline().remove(ProxyConnectHandler.this);
                             outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
                             ctx.pipeline().addLast(new RelayHandler(outboundChannel));
                         });
@@ -142,7 +97,11 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                     @Override
                     protected void initChannel(SocketChannel ch) {
                         ch.pipeline()
-                                .addFirst(new Socks5ProxyHandler(new InetSocketAddress(finalMatchServer.getHost(), finalMatchServer.getPort())))
+                                .addFirst(new Socks5ProxyHandler(
+                                        new InetSocketAddress(finalMatchServer.getHost(),
+                                                finalMatchServer.getPort()),
+                                        finalMatchServer.getUsername(),
+                                        finalMatchServer.getPassword()))
                                 .addLast(new DirectClientHandler(promise));
                     }
                 });
@@ -163,7 +122,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
     }
 
     private RemoteServerInfo getMatchServer(String targetHost) {
-        for (RemoteServerInfo remoteServerInfo : SERVER_CONFIG_PROPERTIES.getRemoteServerInfoList()) {
+        for (RemoteServerInfo remoteServerInfo : ServerConfigProperties.init().getRemoteServerInfoList()) {
             for (HostMatcherEnum hostMatcherEnum : remoteServerInfo.getHostMatcher()) {
                 HostMatcher hostMatcher = HostMatcher.map.get(hostMatcherEnum);
                 boolean match = hostMatcher != null &&
@@ -173,6 +132,6 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                 }
             }
         }
-        return SERVER_CONFIG_PROPERTIES.getDefaultRemoteServer();
+        return ServerConfigProperties.init().getDefaultRemoteServer();
     }
 }

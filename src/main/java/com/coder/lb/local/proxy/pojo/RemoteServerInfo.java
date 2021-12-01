@@ -31,4 +31,7 @@ public class RemoteServerInfo {
 
     @NotNull
     private String matchData;
+
+    private String username;
+    private String password;
 }

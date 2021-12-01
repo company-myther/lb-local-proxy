@@ -45,7 +45,6 @@ import java.util.concurrent.CountDownLatch;
 @ChannelHandler.Sharable
 public final class SocksServerConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
     private static ServerConfigProperties serverConfigProperties;
-    private static final CountDownLatch SERVER_CONFIG_PROPERTIES_LATCH = new CountDownLatch(1);
     private static final Logger     logger = LoggerFactory.getLogger(SocksServerConnectHandler.class);
 
     private final Bootstrap b = new Bootstrap();
@@ -171,6 +170,5 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
 
     public static void setServerConfigProperties(ServerConfigProperties properties) {
         serverConfigProperties = properties;
-        SERVER_CONFIG_PROPERTIES_LATCH.countDown();
     }
 }

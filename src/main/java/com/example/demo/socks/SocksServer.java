@@ -40,6 +40,7 @@ public final class SocksServer implements ApplicationListener<ApplicationReadyEv
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         SocksServerConnectHandler.setServerConfigProperties(serverConfigProperties);
+        logger.info("启动服务器，配置信息为: {}", serverConfigProperties);
 
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();

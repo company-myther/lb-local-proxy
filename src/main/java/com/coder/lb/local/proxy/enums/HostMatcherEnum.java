@@ -1,4 +1,4 @@
-package com.example.demo.enums;
+package com.coder.lb.local.proxy.enums;
 
 /**
  * @author zhuhf

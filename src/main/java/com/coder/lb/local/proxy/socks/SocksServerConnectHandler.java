@@ -13,12 +13,12 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.example.demo.socks;
+package com.coder.lb.local.proxy.socks;
 
-import com.example.demo.enums.HostMatcherEnum;
-import com.example.demo.matcher.HostMatcher;
-import com.example.demo.pojo.RemoteServerInfo;
-import com.example.demo.properties.ServerConfigProperties;
+import com.coder.lb.local.proxy.enums.HostMatcherEnum;
+import com.coder.lb.local.proxy.matcher.HostMatcher;
+import com.coder.lb.local.proxy.pojo.RemoteServerInfo;
+import com.coder.lb.local.proxy.properties.ServerConfigProperties;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
@@ -37,15 +37,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * @author coder
  */
 @ChannelHandler.Sharable
 public final class SocksServerConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
-    private static ServerConfigProperties serverConfigProperties;
-    private static final Logger     logger = LoggerFactory.getLogger(SocksServerConnectHandler.class);
+    private static final ServerConfigProperties SERVER_CONFIG_PROPERTIES = ServerConfigProperties.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger(SocksServerConnectHandler.class);
 
     private final Bootstrap b = new Bootstrap();
 
@@ -155,20 +154,16 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
     }
 
     private RemoteServerInfo getMatchServer(String targetHost) {
-            for (RemoteServerInfo remoteServerInfo : serverConfigProperties.getRemoteServerInfoList()) {
-                for (HostMatcherEnum hostMatcherEnum : remoteServerInfo.getHostMatcher()) {
-                    HostMatcher hostMatcher = HostMatcher.map.get(hostMatcherEnum);
-                    boolean match = hostMatcher != null &&
-                            hostMatcher.match(targetHost, remoteServerInfo.getMatchData());
-                    if (match) {
-                        return remoteServerInfo;
-                    }
+        for (RemoteServerInfo remoteServerInfo : SERVER_CONFIG_PROPERTIES.getRemoteServerInfoList()) {
+            for (HostMatcherEnum hostMatcherEnum : remoteServerInfo.getHostMatcher()) {
+                HostMatcher hostMatcher = HostMatcher.map.get(hostMatcherEnum);
+                boolean match = hostMatcher != null &&
+                        hostMatcher.match(targetHost, remoteServerInfo.getMatchData());
+                if (match) {
+                    return remoteServerInfo;
                 }
             }
-        return serverConfigProperties.getDefaultRemoteServer();
-    }
-
-    public static void setServerConfigProperties(ServerConfigProperties properties) {
-        serverConfigProperties = properties;
+        }
+        return SERVER_CONFIG_PROPERTIES.getDefaultRemoteServer();
     }
 }

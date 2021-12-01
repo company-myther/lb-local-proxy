@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.example.demo.socks;
+package com.coder.lb.local.proxy.socks;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -30,5 +30,6 @@ public final class SocksServerUtils {
         }
     }
 
-    private SocksServerUtils() { }
+    private SocksServerUtils() {
+    }
 }

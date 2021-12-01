@@ -1,7 +1,9 @@
-package com.example.demo.pojo;
+package com.coder.lb.local.proxy.pojo;
 
-import com.example.demo.enums.HostMatcherEnum;
-import lombok.Data;
+import com.coder.lb.local.proxy.enums.HostMatcherEnum;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -11,7 +13,10 @@ import java.util.List;
 /**
  * @author zhuhf
  */
-@Data
+
+@Getter
+@Setter
+@ToString
 public class RemoteServerInfo {
 
     @NotNull

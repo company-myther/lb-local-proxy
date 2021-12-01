@@ -1,7 +1,6 @@
-package com.example.demo.matcher;
+package com.coder.lb.local.proxy.matcher;
 
-import com.example.demo.enums.HostMatcherEnum;
-import com.example.demo.properties.ServerConfigProperties;
+import com.coder.lb.local.proxy.enums.HostMatcherEnum;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -11,11 +10,6 @@ import java.util.Objects;
  */
 @Component
 public class ExactMatcher implements HostMatcher {
-    private final ServerConfigProperties serverConfigProperties;
-
-    public ExactMatcher(ServerConfigProperties properties) {
-        serverConfigProperties = properties;
-    }
 
     @Override
     public boolean match(String targetHost, String matchData) {

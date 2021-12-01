@@ -13,15 +13,15 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.example.demo.socks;
+package com.coder.lb.local.proxy.socks;
 
-import com.example.demo.properties.ServerConfigProperties;
+import com.coder.lb.local.proxy.properties.ServerConfigProperties;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -31,16 +31,13 @@ import org.springframework.stereotype.Component;
 @Component
 public final class SocksServer implements ApplicationListener<ApplicationReadyEvent> {
     private static final Logger logger = LoggerFactory.getLogger(SocksServer.class);
-    private final ServerConfigProperties serverConfigProperties;
 
-    public SocksServer(ServerConfigProperties serverConfigProperties) {
-        this.serverConfigProperties = serverConfigProperties;
-    }
-
+    @SneakyThrows
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        SocksServerConnectHandler.setServerConfigProperties(serverConfigProperties);
-        logger.info("启动服务器，配置信息为: {}", serverConfigProperties);
+        ServerConfigProperties serverConfigProperties = ServerConfigProperties.getInstance();
+        logger.info("启动服务器，配置信息为: \n{}\n---", new YAMLMapper().writerWithDefaultPrettyPrinter()
+                .writeValueAsString(serverConfigProperties));
 
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();

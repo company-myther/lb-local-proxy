@@ -1,22 +1,20 @@
-lb-proxy:
-  port: 8443
-  remote-server-info-list:
-    - host: 127.0.0.1
-      port: 2080
-      hostMatcher:
-        - SUBNET_MATCH
-      matchData: 10.42.0.0/16
-    - host: 127.0.0.1
-      port: 2080
-      hostMatcher:
-        - SUBNET_MATCH
-      matchData: 10.43.0.0/16
-    - host: 127.0.0.1
-      port: 2080
-      hostMatcher:
-        - REGEX_MATCH
-      matchData: ".*svc.cluster.local"
-  default-remote-server:
-    host: 127.0.0.1
-    host-matcher: regex_match
-    port: 10808
+bindHost: null
+defaultRemoteServer:
+  host: 127.0.0.1
+  hostMatcher: 'REGEX_MATCH'
+  matchData: null
+  port: 10808
+port: 18443
+remoteServerInfoList:
+  - host: 127.0.0.1
+    hostMatcher: 'SUBNET_MATCH'
+    matchData: 10.42.0.0/16
+    port: 2080
+  - host: 127.0.0.1
+    hostMatcher: 'SUBNET_MATCH'
+    matchData: 10.43.0.0/16
+    port: 2080
+  - host: 127.0.0.1
+    hostMatcher: 'REGEX_MATCH'
+    matchData: .*svc.cluster.local
+    port: 2080

@@ -1,6 +1,6 @@
-package com.example.demo.matcher;
+package com.coder.lb.local.proxy.matcher;
 
-import com.example.demo.enums.HostMatcherEnum;
+import com.coder.lb.local.proxy.enums.HostMatcherEnum;
 import org.apache.commons.net.util.SubnetUtils;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,6 @@ public class SubnetMatcher implements HostMatcher {
     /**
      * IP v6 regex taken from http://stackoverflow.com/questions/53497/regular-expression-that-matches-valid-ipv6-addresses
      */
-    private static final String IP_V6_DOMAIN = "(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))";
     private static final Pattern IP_PATTERN = Pattern.compile("(" + IP_DOMAIN + ")|(" + IP_DOMAIN + ")");
     private final ConcurrentMap<String, SubnetUtils.SubnetInfo> cache = new ConcurrentHashMap<>();
 

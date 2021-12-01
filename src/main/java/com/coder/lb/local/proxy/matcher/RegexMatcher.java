@@ -1,18 +1,12 @@
-package com.example.demo.matcher;
+package com.coder.lb.local.proxy.matcher;
 
-import com.example.demo.enums.HostMatcherEnum;
-import com.example.demo.properties.ServerConfigProperties;
-import org.apache.commons.net.util.SubnetUtils;
-import org.hibernate.validator.internal.util.DomainNameUtil;
+import com.coder.lb.local.proxy.enums.HostMatcherEnum;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * @author zhuhf

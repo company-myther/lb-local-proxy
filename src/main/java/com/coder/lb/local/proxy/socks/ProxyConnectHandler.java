@@ -102,7 +102,7 @@ public final class ProxyConnectHandler extends SimpleChannelInboundHandler<Socks
                                                 finalMatchServer.getPort()),
                                         finalMatchServer.getUsername(),
                                         finalMatchServer.getPassword()))
-                                .addLast(new DirectClientHandler(promise));
+                                .addLast(new SocksClientHandler(promise));
                     }
                 });
         b.connect(request.dstAddr(), request.dstPort()).addListener((ChannelFutureListener) future -> {
@@ -122,7 +122,7 @@ public final class ProxyConnectHandler extends SimpleChannelInboundHandler<Socks
     }
 
     private RemoteServerInfo getMatchServer(String targetHost) {
-        for (RemoteServerInfo remoteServerInfo : ServerConfigProperties.init().getRemoteServerInfoList()) {
+        for (RemoteServerInfo remoteServerInfo : ServerConfigProperties.getInstance().getRemoteServerInfoList()) {
             for (HostMatcherEnum hostMatcherEnum : remoteServerInfo.getHostMatcher()) {
                 HostMatcher hostMatcher = HostMatcher.map.get(hostMatcherEnum);
                 boolean match = hostMatcher != null &&
@@ -132,6 +132,6 @@ public final class ProxyConnectHandler extends SimpleChannelInboundHandler<Socks
                 }
             }
         }
-        return ServerConfigProperties.init().getDefaultRemoteServer();
+        return ServerConfigProperties.getInstance().getDefaultRemoteServer();
     }
 }

@@ -30,7 +30,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public final class SocksServerHandler extends SimpleChannelInboundHandler<SocksMessage> {
 
     public static final SocksServerHandler INSTANCE = new SocksServerHandler();
-    private final AtomicBoolean enablePwdAuth = new AtomicBoolean(false);
+    private final AtomicBoolean enablePwdAuth = new AtomicBoolean(
+            ServerConfigProperties.getInstance().getUsername() != null ||
+                    ServerConfigProperties.getInstance().getPassword() != null
+    );
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, SocksMessage socksRequest) throws Exception {
@@ -38,14 +41,12 @@ public final class SocksServerHandler extends SimpleChannelInboundHandler<SocksM
         if (socksRequest.version() == SocksVersion.SOCKS5) {
             if (socksRequest instanceof Socks5InitialRequest) {
                 ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
-                ServerConfigProperties instance = ServerConfigProperties.init();
-                enablePwdAuth.set(instance.getUsername() != null || instance.getPassword() != null);
                 ctx.write(new DefaultSocks5InitialResponse(
                         enablePwdAuth.get() ? Socks5AuthMethod.PASSWORD : Socks5AuthMethod.NO_AUTH
                 ));
             } else if (socksRequest instanceof Socks5PasswordAuthRequest) {
                 ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
-                ServerConfigProperties instance = ServerConfigProperties.init();
+                ServerConfigProperties instance = ServerConfigProperties.getInstance();
 
                 if (enablePwdAuth.get()) {
                     boolean authResult = Objects.equals(instance.getUsername(), ((Socks5PasswordAuthRequest) socksRequest).username())

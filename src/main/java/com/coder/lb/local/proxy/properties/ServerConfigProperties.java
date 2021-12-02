@@ -44,7 +44,7 @@ public class ServerConfigProperties {
         }
     }
 
-    public static ServerConfigProperties init() {
+    public static ServerConfigProperties getInstance() {
         return INSTANCE;
     }
 

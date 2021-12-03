@@ -38,7 +38,7 @@ public class LbProxyApplication {
         ServerConfigProperties.init(new FileSystemResource(configFilePath).getInputStream());
 
         SpringApplication.run(LbProxyApplication.class, args);
+        AppLauncher.start();
 //        System.out.println(new SubnetUtils("10.43.0.0/16").getInfo().isInRange("10.43.245.164"));
     }
-
 }

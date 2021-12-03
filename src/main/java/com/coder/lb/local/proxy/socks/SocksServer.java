@@ -16,17 +16,23 @@
 package com.coder.lb.local.proxy.socks;
 
 import com.coder.lb.local.proxy.properties.ServerConfigProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public final class SocksServer implements ApplicationListener<ApplicationReadyEvent> {
@@ -35,6 +41,23 @@ public final class SocksServer implements ApplicationListener<ApplicationReadyEv
     @SneakyThrows
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
+        new ThreadPoolExecutor(
+                1,
+                1,
+                10,
+                TimeUnit.HOURS,
+                new LinkedBlockingQueue<>(1),
+                new DefaultThreadFactory("socks-server")
+        ).submit(() -> {
+            try {
+                startServer();
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void startServer() throws JsonProcessingException {
         ServerConfigProperties serverConfigProperties = ServerConfigProperties.getInstance();
         logger.info("Start the server, the configuration information is: \n{}\n---", new YAMLMapper().writerWithDefaultPrettyPrinter()
                 .writeValueAsString(serverConfigProperties));
